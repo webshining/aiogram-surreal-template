@@ -1,0 +1,98 @@
+# Russian translations for PROJECT.
+# Copyright (C) 2024 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2024-08-13 15:07+0300\n"
+"PO-Revision-Date: 2024-01-07 01:33+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.16.0\n"
+
+#: app/commands/default.py:8
+msgid "start chat"
+msgstr "начать"
+
+#: app/commands/default.py:9
+msgid "search song"
+msgstr "найти песню"
+
+#: app/commands/default.py:10
+msgid "library"
+msgstr "библиотека"
+
+#: app/commands/default.py:11
+msgid "reset action"
+msgstr "завершить действие"
+
+#: app/handlers/cancel.py:11
+msgid "State reset!"
+msgstr "Действие завершено!"
+
+#: app/handlers/users/library.py:12 app/handlers/users/library.py:21
+#: app/handlers/users/search.py:39 app/handlers/users/song.py:32
+msgid "Select song:"
+msgstr "Выберите песню:"
+
+#: app/handlers/users/search.py:30
+msgid "Enter song name:"
+msgstr "Введите название песни:"
+
+#: app/handlers/users/search.py:46
+msgid "A song with this name was not found, try another:"
+msgstr "Песня с таким названием не была найдена, попробуйте другое:"
+
+#: app/handlers/users/song.py:22
+msgid "Looks like the song has no lyrics"
+msgstr "Похоже не ресурсе нету слов для песни"
+
+#: app/handlers/users/song.py:36
+msgid "Looks like the songs are out of memory or you used /cancel"
+msgstr "Похоже песен в памяти нет или вы использовали /cancel"
+
+#: app/handlers/users/song.py:58
+msgid "Looks like there’s no music on the resource for this song"
+msgstr "Похоже на ресурсе нету музыки для этой песни"
+
+#: app/handlers/users/start.py:10
+msgid "👋 Hello <b>{}</b>"
+msgstr "👋 Привет <b>{}</b>"
+
+#: app/handlers/users/start.py:10
+msgid "Commands:"
+msgstr "Команды:"
+
+#: app/handlers/users/start.py:14
+msgid ""
+"If you see an error in the text display or anything else, please let me "
+"know: <b>@webshining</b>"
+msgstr ""
+"Если вы увидели ошибку в отображении текста или что-то еще, дайте мне "
+"знать: <b>@webshining</b>"
+
+#: app/keyboards/song.py:18
+msgid "Chords: {}"
+msgstr "Аккорды: {}"
+
+#: app/keyboards/song.py:22
+msgid "Music"
+msgstr "Музыка"
+
+#: app/keyboards/song.py:27
+msgid "In library: {}"
+msgstr "В библиотеке: {}"
+
+#: app/keyboards/song.py:33
+msgid "Back"
+msgstr "Назад"
+
