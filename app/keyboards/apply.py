@@ -3,14 +3,22 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 
-class ApplyCallback(CallbackData, prefix="apply"):
-    data: str
+from aiogram.filters.callback_data import CallbackData
+
+from loader import i18n
+from .base import BaseInlineKeyboard
 
 
-def get_apply_markup(data: str, *args) -> InlineKeyboardMarkup:
-    args = [str(i) for i in args]
-    buttons = [InlineKeyboardButton(text="🆗", callback_data=ApplyCallback(data=data).pack())]
+class ApplyKeyboard(BaseInlineKeyboard):
+    def keyboard(self, data: str):
+        builder = self.builder()
 
-    builder = InlineKeyboardBuilder()
-    builder.add(*buttons)
-    return builder.as_markup()
+        builder.button(text="🆗", callback_data=self._get_data(data=data))
+
+        return builder.as_markup()
+
+    class Callback(CallbackData, prefix="apply"):
+        data: str
+
+
+ApplyKeyboard = ApplyKeyboard()

@@ -27,7 +27,7 @@ SURREAL_DB = env.str("SURREAL_DB", "bot")
 SURREAL_USER = env.str("SURREAL_USER", None)
 SURREAL_PASS = env.str("SURREAL_PASS", None)
 
-SURREAL_URL = env.str("SURREAL_URL", None)
+SURREAL_URL = env.str("SURREAL_URL", "ws://localhost:8000")
 
 I18N_PATH = f"{DIR}/data/locales"
 I18N_DOMAIN = env.str("I18N_DOMAIN", "bot")

@@ -1,6 +1,6 @@
 from pydantic import Field
 
-from .base import Base
+from ..base import Base
 
 
 class User(Base):
@@ -9,6 +9,6 @@ class User(Base):
     username: str
     lang: str = Field(default="en")
     status: str = Field(default="user")
-    
+
 
 User.set_collection("user")

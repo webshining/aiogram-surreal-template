@@ -5,20 +5,16 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 from surrealdb import AsyncSurrealDB, RecordID, Table
 
 from data.config import SURREAL_DB, SURREAL_NS, SURREAL_PASS, SURREAL_URL, SURREAL_USER
+from utils import convert_datetime_to_iso
 
 
 @asynccontextmanager
 async def get_session():
-    async with AsyncSurrealDB(SURREAL_URL) if SURREAL_URL else AsyncSurrealDB("surrealkv://database.kv") as session:
+    async with AsyncSurrealDB(SURREAL_URL) as session:
         if SURREAL_PASS and SURREAL_USER:
             await session.sign_in(SURREAL_USER, SURREAL_PASS)
         await session.use(SURREAL_NS, SURREAL_DB)
         yield session
-
-
-def convert_datetime_to_iso(dt: datetime) -> str:
-    dt.isoformat()
-    return dt.strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def execute(func):
@@ -63,7 +59,7 @@ class Base(BaseModel, metaclass=BaseMeta):
     @classmethod
     @execute
     async def create(cls, session: AsyncSurrealDB = None, **kwargs):
-        id = kwargs.pop('id', None)
+        id = kwargs.pop("id", None)
         id = RecordID(cls._table, id) if id else Table(cls._table)
         kwargs = cls(**kwargs).model_dump(mode="json", exclude={"id"})
         obj = await session.create(id, kwargs)
@@ -92,7 +88,7 @@ class Base(BaseModel, metaclass=BaseMeta):
     @classmethod
     @execute
     async def update_or_create(cls, id: str | int, session: AsyncSurrealDB = None, **kwargs):
-        if user := await cls.update(id=id, **kwargs):
+        if user := await cls.update(id=id, session=session, **kwargs):
             return user
         return await cls.create(id=id, session=session, **kwargs)
 
@@ -110,6 +106,4 @@ class Base(BaseModel, metaclass=BaseMeta):
             return int(id)
         return id
 
-    model_config = ConfigDict(
-        json_encoders={datetime: convert_datetime_to_iso}
-    )
+    model_config = ConfigDict(json_encoders={datetime: convert_datetime_to_iso})
