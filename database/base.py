@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
-from surrealdb import AsyncSurrealDB, RecordID, Table
+from surrealdb import AsyncSurreal, RecordID, Table
 
 from data.config import SURREAL_DB, SURREAL_NS, SURREAL_PASS, SURREAL_URL, SURREAL_USER
 from utils import convert_datetime_to_iso
@@ -10,9 +10,11 @@ from utils import convert_datetime_to_iso
 
 @asynccontextmanager
 async def get_session():
-    async with AsyncSurrealDB(SURREAL_URL) as session:
+    async with AsyncSurreal(SURREAL_URL) as session:
         if SURREAL_PASS and SURREAL_USER:
-            await session.sign_in(SURREAL_USER, SURREAL_PASS)
+            await session.signin(
+                {"username": SURREAL_USER, "password": SURREAL_PASS, "namespace": SURREAL_NS, "database": SURREAL_DB}
+            )
         await session.use(SURREAL_NS, SURREAL_DB)
         yield session
 
@@ -46,19 +48,19 @@ class Base(BaseModel, metaclass=BaseMeta):
 
     @classmethod
     @execute
-    async def get(cls, id: str | int, session: AsyncSurrealDB = None, **kwargs):
+    async def get(cls, id: str | int, session: AsyncSurreal = None, **kwargs):
         obj = await session.select(RecordID(cls._table, id))
         return cls(**obj) if obj else None
 
     @classmethod
     @execute
-    async def get_all(cls, session: AsyncSurrealDB = None, **kwargs):
+    async def get_all(cls, session: AsyncSurreal = None, **kwargs):
         objs = await session.select(Table(cls._table))
         return [cls(**o) for o in objs]
 
     @classmethod
     @execute
-    async def create(cls, session: AsyncSurrealDB = None, **kwargs):
+    async def create(cls, session: AsyncSurreal = None, **kwargs):
         id = kwargs.pop("id", None)
         id = RecordID(cls._table, id) if id else Table(cls._table)
         kwargs = cls(**kwargs).model_dump(mode="json", exclude={"id"})
@@ -67,27 +69,27 @@ class Base(BaseModel, metaclass=BaseMeta):
 
     @classmethod
     @execute
-    async def update(cls, id: str | int, session: AsyncSurrealDB = None, **kwargs):
+    async def update(cls, id: str | int, session: AsyncSurreal = None, **kwargs):
         kwargs["updated_at"] = convert_datetime_to_iso(datetime.now(timezone.utc))
         await session.query(f"UPDATE {RecordID(cls._table, id)} MERGE {kwargs}")
         return await cls.get(id=id, session=session)
 
     @classmethod
     @execute
-    async def delete(cls, id: str | int, session: AsyncSurrealDB = None):
+    async def delete(cls, id: str | int, session: AsyncSurreal = None):
         await session.delete(RecordID(cls._table, id))
         return True
 
     @classmethod
     @execute
-    async def get_or_create(cls, id: str | int, session: AsyncSurrealDB = None, **kwargs):
+    async def get_or_create(cls, id: str | int, session: AsyncSurreal = None, **kwargs):
         if obj := await cls.get(id, session=session):
             return obj
         return await cls.create(id=id, session=session, **kwargs)
 
     @classmethod
     @execute
-    async def update_or_create(cls, id: str | int, session: AsyncSurrealDB = None, **kwargs):
+    async def update_or_create(cls, id: str | int, session: AsyncSurreal = None, **kwargs):
         if user := await cls.update(id=id, session=session, **kwargs):
             return user
         return await cls.create(id=id, session=session, **kwargs)
